@@ -3,6 +3,7 @@
 #' @param rawmat raw data matrix; genes in rows; cell names in columns.
 #' @param  id.type gene id type: Symbol or Ensemble.
 #' @param  cell.line if the data are from pure cell line,put "yes"; if cell line data are a mixture of tumor and normal cells, still put "no".
+#' @param ngene.threshold minimal number of genes per cell. Default is 200.
 #' @param LOW.DR minimal population fractions of genes for smoothing.
 #' @param UP.DR minimal population fractions of genes for segmentation.
 #' @param win.size minimal window sizes for segmentation.
@@ -26,7 +27,7 @@
 ###
 
 
-copykat <- function(rawmat=rawdata, id.type="S", cell.line="no", ngene.chr=5,LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1){
+copykat <- function(rawmat=rawdata, id.type="S", cell.line="no",ngene.threshold=200, ngene.chr=5,LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1){
 
 start_time <- Sys.time()
   set.seed(1234)
@@ -39,10 +40,10 @@ start_time <- Sys.time()
 
   genes.raw <- apply(rawmat, 2, function(x)(sum(x>0)))
 
-  if(sum(genes.raw> 200)==0) stop("none cells have more than 200 genes")
+  if(sum(genes.raw> ngene.threshold)==0) stop(paste0("none cells have more than ",ngene.threshold," genes"))
   if(sum(genes.raw<100)>1){
-    rawmat <- rawmat[, -which(genes.raw< 200)]
-    print(paste("filtered out ", sum(genes.raw<=200), " cells with less than 200 genes; remaining ", ncol(rawmat), " cells", sep=""))
+    rawmat <- rawmat[, -which(genes.raw< ngene.threshold)]
+    print(paste("filtered out ", sum(genes.raw<=ngene.threshold), " cells with less than ",ngene.threshold," genes; remaining ", ncol(rawmat), " cells", sep=""))
   }
   ##
   der<- apply(rawmat,1,function(x)(sum(x>0)))/ncol(rawmat)
