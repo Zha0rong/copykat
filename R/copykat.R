@@ -3,7 +3,7 @@
 #' @param rawmat raw data matrix; genes in rows; cell names in columns.
 #' @param  id.type gene id type: Symbol or Ensemble.
 #' @param  cell.line if the data are from pure cell line,put "yes"; if cell line data are a mixture of tumor and normal cells, still put "no".
-#' @param ngene.threshold minimal number of genes per cell. Default is 200.
+#' @param ngene.threshold minimal number of genes per cell. Default is 0.
 #' @param LOW.DR minimal population fractions of genes for smoothing.
 #' @param UP.DR minimal population fractions of genes for segmentation.
 #' @param win.size minimal window sizes for segmentation.
@@ -27,7 +27,7 @@
 ###
 
 
-copykat <- function(rawmat=rawdata, id.type="S", cell.line="no",ngene.threshold=200, ngene.chr=5,LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1){
+copykat <- function(rawmat=rawdata, id.type="S", cell.line="no",ngene.threshold=0, ngene.chr=5,LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1){
 
 start_time <- Sys.time()
   set.seed(1234)
