@@ -41,7 +41,7 @@ start_time <- Sys.time()
   genes.raw <- apply(rawmat, 2, function(x)(sum(x>0)))
 
   if(sum(genes.raw> ngene.threshold)==0) stop(paste0("none cells have more than ",ngene.threshold," genes"))
-  if(sum(genes.raw<100)>1){
+  if(sum(genes.raw<ngene.threshold)>1){
     rawmat <- rawmat[, -which(genes.raw< ngene.threshold)]
     print(paste("filtered out ", sum(genes.raw<=ngene.threshold), " cells with less than ",ngene.threshold," genes; remaining ", ncol(rawmat), " cells", sep=""))
   }
