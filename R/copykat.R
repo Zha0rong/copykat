@@ -95,10 +95,10 @@ start_time <- Sys.time()
     i<- i+1
   }
 	      ToRemov2 = c("")
-  if(length(ToRemov2)==(ncol(anno.mat)-7)) stop("all cells are filtered")
-  if(length(ToRemov2)>0){
-    anno.mat <-anno.mat[, -which(colnames(anno.mat) %in% ToRemov2)]
-  }
+  #if(length(ToRemov2)==(ncol(anno.mat)-7)) stop("all cells are filtered")
+  #if(length(ToRemov2)>0){
+  #  anno.mat <-anno.mat[, -which(colnames(anno.mat) %in% ToRemov2)]
+  #}
 
   # print(paste("filtered out ", length(ToRemov2), " cells with less than ",ngene.chr, " genes per chr", sep=""))
   rawmat3 <- data.matrix(anno.mat[, 8:ncol(anno.mat)])
@@ -202,13 +202,13 @@ start_time <- Sys.time()
     }
     i<- i+1
   }
-ToRemov3 = c("")
-  if(length(ToRemov3)==ncol(norm.mat.relat)) stop ("all cells are filtered")
+#ToRemov3 = c("")
+ # if(length(ToRemov3)==ncol(norm.mat.relat)) stop ("all cells are filtered")
 
-  if(length(ToRemov3)>0){
-    norm.mat.relat <-norm.mat.relat[, -which(colnames(norm.mat.relat) %in% ToRemov3)]
+  #if(length(ToRemov3)>0){
+   # norm.mat.relat <-norm.mat.relat[, -which(colnames(norm.mat.relat) %in% ToRemov3)]
    #print(paste("filtered out ", length(ToRemov3), " cells with less than ",ngene.chr, " genes per chr", sep=""))
-  }
+  #}
 
   #print(paste("final segmentation: ", nrow(norm.mat.relat), " genes; ", ncol(norm.mat.relat), " cells", sep=""))
 
