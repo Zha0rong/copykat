@@ -94,7 +94,7 @@ start_time <- Sys.time()
     }
     i<- i+1
   }
-
+	      ToRemov2 = c("")
   if(length(ToRemov2)==(ncol(anno.mat)-7)) stop("all cells are filtered")
   if(length(ToRemov2)>0){
     anno.mat <-anno.mat[, -which(colnames(anno.mat) %in% ToRemov2)]
@@ -202,7 +202,7 @@ start_time <- Sys.time()
     }
     i<- i+1
   }
-
+ToRemov3 = c("")
   if(length(ToRemov3)==ncol(norm.mat.relat)) stop ("all cells are filtered")
 
   if(length(ToRemov3)>0){
