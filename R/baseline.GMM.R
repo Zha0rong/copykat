@@ -46,8 +46,7 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
 
     d <- parallelDist::parDist(t(CNA.mat), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
 
-    silhouette=factoextra::fviz_nbclust(x=as.matrix(d),FUNcluster = factoextra::hcut,method = 'silhouette',diss = (d),k.max = 50)
-    km=as.integer(as.character(silhouette$data$clusters))[which(silhouette$data$y==max(silhouette$data$y))]
+    km=6
 
     fit <- hclust(d, method="ward.D2")
     ct <- cutree(fit, k=km)
