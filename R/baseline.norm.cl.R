@@ -14,7 +14,7 @@
 #' @export
 
 
-baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores){
+baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores,maxit=10000){
 
   d <- parallelDist::parDist(t(norm.mat.smooth), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
   km <- 6
@@ -35,7 +35,7 @@ baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores){
 
     data.c <- apply(norm.mat.smooth[, which(ct==i)],1, median)
     sx <- max(c(0.05, 0.5*sd(data.c)))
-    GM3 <- mixtools::normalmixEM(data.c, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2), sigma = sx,arbvar=FALSE,ECM=FALSE,maxit=5000)
+    GM3 <- mixtools::normalmixEM(data.c, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2), sigma = sx,arbvar=FALSE,ECM=FALSE,maxit=maxit)
     SDM <- c(SDM, GM3$sigma[1])
     SSD <- c(SSD, sd(data.c))
        i <- i+1
