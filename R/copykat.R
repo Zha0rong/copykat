@@ -16,6 +16,8 @@
 #' @param plot.genes TRUE or FALSE, output heatmap of CNVs with genename labels
 #' @param genome hg20 or mm10, current version only work for human or mouse genes
 #' @param min.gene.per.cell, default 200
+#' @param maxit, default 10000
+
 #' @return 1) aneuploid/diploid prediction results; 2) CNA results in 220KB windows; 3) heatmap; 4) hclustering object.
 #'
 #' @examples
@@ -27,7 +29,7 @@
 ###
 
 
-copykat <- function(rawmat=rawdata, id.type="S", cell.line="no", ngene.chr=5,min.gene.per.cell=200, LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1){
+copykat <- function(rawmat=rawdata, id.type="S", cell.line="no", ngene.chr=5,min.gene.per.cell=200, LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1,maxit=10000){
 
 start_time <- Sys.time()
   set.seed(1234)
@@ -162,14 +164,14 @@ start_time <- Sys.time()
       	norm.mat.relat <- norm.mat.smooth-basel
 
         }else {
-         basa <- baseline.norm.cl(norm.mat.smooth=norm.mat.smooth, min.cells=5, n.cores=n.cores)
+         basa <- baseline.norm.cl(norm.mat.smooth=norm.mat.smooth, min.cells=5, n.cores=n.cores,maxit=maxit)
           basel <- basa$basel
           WNS <- basa$WNS
           preN <- basa$preN
           CL <- basa$cl
           if (WNS =="unclassified.prediction"){
 
-                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores)
+                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores,maxit=maxit)
                     basel <-basa$basel
                     WNS <- basa$WNS
 
