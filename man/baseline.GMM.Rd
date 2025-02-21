@@ -10,7 +10,8 @@ baseline.GMM(
   mu.cut = 0.05,
   Nfraq.cut = 0.99,
   RE.before = basa,
-  n.cores = 1
+  n.cores = 1,
+  maxit = 10000
 )
 }
 \arguments{
