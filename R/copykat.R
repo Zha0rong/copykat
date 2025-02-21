@@ -29,7 +29,12 @@
 ###
 
 
-copykat <- function(rawmat=rawdata, id.type="S", cell.line="no", ngene.chr=5,min.gene.per.cell=200, LOW.DR=0.05, UP.DR=0.1, win.size=25, norm.cell.names="", KS.cut=0.1, sam.name="", distance="euclidean", output.seg="FALSE", plot.genes="TRUE", genome="hg20", n.cores=1,maxit=10000){
+copykat <- function(rawmat=rawdata, id.type="S",
+                    cell.line="no", ngene.chr=5,min.gene.per.cell=200,
+                    LOW.DR=0.05, UP.DR=0.1, win.size=25,
+                    norm.cell.names="", KS.cut=0.1,
+                    sam.name="", distance="euclidean", output.seg="FALSE",
+                    plot.genes="TRUE", genome="hg20", n.cores=1,maxit=10000){
 
 start_time <- Sys.time()
   set.seed(1234)
@@ -236,7 +241,7 @@ start_time <- Sys.time()
   results.com <- apply(results$logCNA,2, function(x)(x <- x-mean(x)))
   RNA.copycat <- cbind(anno.mat2[, 1:7], results.com)
 
-  write.table(RNA.copycat, paste(sample.name, "CNA_raw_results_gene_by_cell.txt", sep=""), sep="\t", row.names = FALSE, quote = F)
+  saveRDS(RNA.copycat, paste(sample.name, "CNA_raw_results_gene_by_cell.rds", sep=""))
 
   if(genome=="hg20"){
   print("step 6: convert to genomic bins...") ###need multi-core
@@ -249,7 +254,7 @@ start_time <- Sys.time()
     if(cell.line=="yes"){
 
                mat.adj <- data.matrix(Aj$RNA.adj[, 4:ncol(Aj$RNA.adj)])
-               write.table(cbind(Aj$RNA.adj[, 1:3], mat.adj), paste(sample.name, "CNA_results.txt", sep=""), sep="\t", row.names = FALSE, quote = F)
+               saveRDS(cbind(Aj$RNA.adj[, 1:3], mat.adj), paste(sample.name, "CNA_results.rds", sep=""))
 
                 if(distance=="euclidean"){
                  hcc <- hclust(parallelDist::parDist(t(mat.adj),threads =n.cores, method = distance), method = "ward.D")
@@ -437,10 +442,10 @@ start_time <- Sys.time()
     colnames(res) <- c("cell.names", "copykat.pred")
   }
   ##end
-  write.table(res, paste(sample.name, "prediction.txt",sep=""), sep="\t", row.names = FALSE, quote = FALSE)
+  saveRDS(res, paste(sample.name, "prediction.rds",sep=""))
 
   ####save copycat CNA
-  write.table(cbind(Aj$RNA.adj[, 1:3], mat.adj), paste(sample.name, "CNA_results.txt", sep=""), sep="\t", row.names = FALSE, quote = F)
+  saveRDS(cbind(Aj$RNA.adj[, 1:3], mat.adj), paste(sample.name, "CNA_results.rds", sep=""))
 
   ####%%%%%%%%%%%%%%%%%next heatmaps, subpopulations and tSNE overlay
   print("step 10: ploting heatmap ...")
@@ -572,7 +577,7 @@ start_time <- Sys.time()
 
   colnames(Short) <- c("ID","chrom","loc.start","loc.end","num.mark","seg.mean")
   head(Short)
-  write.table(Short, paste(sample.name, "CNA_results.seg", sep=""), row.names = FALSE, quote=FALSE, sep="\t")
+  saveRDS(Short, paste(sample.name, "CNA_results.seg.rds", sep=""))
 
 }
   end_time<- Sys.time()
@@ -677,10 +682,10 @@ start_time <- Sys.time()
       colnames(res) <- c("cell.names", "copykat.pred")
     }
     ##end
-    write.table(res, paste(sample.name, "prediction.txt",sep=""), sep="\t", row.names = FALSE, quote = FALSE)
+    saveRDS(res, paste(sample.name, "prediction.rds",sep=""))
 
     ####save copycat CNA
-    write.table(cbind(anno.mat2[, 1:7], mat.adj), paste(sample.name, "CNA_results.txt", sep=""), sep="\t", row.names = FALSE, quote = F)
+    saveRDS(cbind(anno.mat2[, 1:7], mat.adj), paste(sample.name, "CNA_results.rds", sep=""))
 
     ####%%%%%%%%%%%%%%%%%next heatmaps, subpopulations and tSNE overlay
     print("step 10: ploting heatmap ...")
@@ -774,7 +779,7 @@ start_time <- Sys.time()
 
       colnames(Short) <- c("ID","chrom","loc.start","loc.end","num.mark","seg.mean")
 
-      write.table(Short, paste(sample.name, "CNA_results.seg", sep=""), row.names = FALSE, quote=FALSE, sep="\t")
+      saveRDS(Short, paste(sample.name, "CNA_results.seg.rds", sep=""))
 
     }
     end_time<- Sys.time()
