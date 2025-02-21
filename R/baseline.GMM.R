@@ -1,5 +1,5 @@
 #' pre-define a group of normal cells with GMM.
-#'
+#' @import factoextra
 #' @param CNA.mat smoothed data matrix; genes in rows; cell names in columns.
 #' @param max.normal find the first number diploid cells to save efforts.
 #' @param mu.cut diploid baseline cutoff.
@@ -45,7 +45,10 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
     preN <- names(N.normal)[which(N.normal=="diploid")]
 
     d <- parallelDist::parDist(t(CNA.mat), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
-    km <- 20
+
+    silhouette=factoextra::fviz_nbclust(x=as.matrix(d),FUNcluster = hcut,method = 'silhouette',diss = dist(d),k.max = 50)
+    km=as.integer(as.character(silhouette$data$clusters))[which(silhouette$data$y==max(silhouette$data$y))]
+
     fit <- hclust(d, method="ward.D2")
     ct <- cutree(fit, k=km)
 

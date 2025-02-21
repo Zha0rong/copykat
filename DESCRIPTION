@@ -9,7 +9,8 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Imports:
-        parallel,
+  factoextra,
+  parallel,
 	parallelDist,
 	dlm,
 	gplots,
@@ -17,7 +18,7 @@ Imports:
 	mixtools,
 	cluster,
 	MCMCpack
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown
