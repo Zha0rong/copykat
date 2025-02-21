@@ -45,7 +45,7 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
     preN <- names(N.normal)[which(N.normal=="diploid")]
 
     d <- parallelDist::parDist(t(CNA.mat), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
-    km <- 6
+    km <- 20
     fit <- hclust(d, method="ward.D2")
     ct <- cutree(fit, k=km)
 
