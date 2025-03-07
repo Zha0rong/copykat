@@ -1,5 +1,7 @@
 #' find a cluster of diploid cells with integrative clustering method
 #' @import factoextra
+#' @import cluster
+
 #' @param norm.mat.smooth smoothed data matrix; genes in rows; cell names in columns.
 #' @param min.cells minimal number of cells per cluster.
 #' @param n.cores number of cores for parallel computing.
@@ -23,7 +25,7 @@ baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores,maxit
 
 for (i in 1:nrow(selection)) {
   Clustering.results=cutree(fit,k = selection$k[i])
-  sil=silhouette(Clustering.results,dist = Disimmilarity)
+  sil=cluster::silhouette(Clustering.results,dist = d)
   selection$sil[i]=mean(sil[,3])
   print(i)
 }
