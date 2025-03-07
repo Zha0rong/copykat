@@ -1,5 +1,7 @@
 #' find a cluster of diploid cells with integrative clustering method
 #' @import factoextra
+#' @import cluster
+
 #' @param norm.mat.smooth smoothed data matrix; genes in rows; cell names in columns.
 #' @param min.cells minimal number of cells per cluster.
 #' @param n.cores number of cores for parallel computing.
@@ -17,12 +19,22 @@
 baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores,maxit=10000){
 
   d <- parallelDist::parDist(t(norm.mat.smooth), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
-
-  silhouette=factoextra::fviz_nbclust(x=as.matrix(d),FUNcluster = factoextra::hcut,method = 'silhouette',diss = (d),k.max = 50)
-  km=as.integer(as.character(silhouette$data$clusters))[which(silhouette$data$y==max(silhouette$data$y))]
-  print(km)
-
   fit <- hclust(d, method="ward.D2")
+  selection=data.frame(k=seq(2,50))
+  selection$sil=0
+
+for (i in 1:nrow(selection)) {
+  Clustering.results=cutree(fit,k = selection$k[i])
+  sil=cluster::silhouette(Clustering.results,dist = d)
+  selection$sil[i]=mean(sil[,3])
+  print(i)
+}
+
+selected=selection$k[selection$sil==max(selection$sil)]
+if (length(selected)>1) {
+  selected=max(selected)
+}
+km=selected
   ct <- cutree(fit, k=km)
 
   while(!all(table(ct)>min.cells)){
