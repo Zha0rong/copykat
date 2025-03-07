@@ -32,7 +32,7 @@
 copykat <- function(rawmat=rawdata, id.type="S",
                     cell.line="no", ngene.chr=5,min.gene.per.cell=200,
                     LOW.DR=0.05, UP.DR=0.1, win.size=25,
-                    norm.cell.names="", KS.cut=0.1,
+                    norm.cell.names="", KS.cut=0.1,normal_cell_fraction=0.05,
                     sam.name="", distance="euclidean", output.seg="FALSE",
                     plot.genes="TRUE", genome="hg20", n.cores=1,maxit=10000){
 
@@ -176,7 +176,7 @@ start_time <- Sys.time()
           CL <- basa$cl
           if (WNS =="unclassified.prediction"){
 
-                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores,maxit=maxit)
+                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=normal_cell_fraction*ncol(norm.mat.smooth), mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores,maxit=maxit)
                     basel <-basa$basel
                     WNS <- basa$WNS
 

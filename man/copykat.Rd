@@ -15,6 +15,7 @@ copykat(
   win.size = 25,
   norm.cell.names = "",
   KS.cut = 0.1,
+  normal_cell_fraction = 0.05,
   sam.name = "",
   distance = "euclidean",
   output.seg = "FALSE",
