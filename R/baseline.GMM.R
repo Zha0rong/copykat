@@ -1,5 +1,6 @@
 #' pre-define a group of normal cells with GMM.
 #' @import factoextra
+#' @import cluster
 #' @param CNA.mat smoothed data matrix; genes in rows; cell names in columns.
 #' @param max.normal find the first number diploid cells to save efforts.
 #' @param mu.cut diploid baseline cutoff.
@@ -49,6 +50,20 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
     km=6
 
     fit <- hclust(d, method="ward.D2")
+    selection=data.frame(k=seq(2,50))
+    selection$sil=0
+
+    for (i in 1:nrow(selection)) {
+      Clustering.results=cutree(fit,k = selection$k[i])
+      sil=cluster::silhouette(Clustering.results,dist = d)
+      selection$sil[i]=mean(sil[,3])
+    }
+
+    selected=selection$k[selection$sil==max(selection$sil)]
+    if (length(selected)>1) {
+      selected=max(selected)
+    }
+    km=selected
     ct <- cutree(fit, k=km)
 
 

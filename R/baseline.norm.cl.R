@@ -27,7 +27,6 @@ for (i in 1:nrow(selection)) {
   Clustering.results=cutree(fit,k = selection$k[i])
   sil=cluster::silhouette(Clustering.results,dist = d)
   selection$sil[i]=mean(sil[,3])
-  print(i)
 }
 
 selected=selection$k[selection$sil==max(selection$sil)]
