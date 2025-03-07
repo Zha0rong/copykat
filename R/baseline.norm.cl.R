@@ -17,7 +17,11 @@
 baseline.norm.cl <- function(norm.mat.smooth, min.cells=5, n.cores=n.cores,maxit=10000){
 
   d <- parallelDist::parDist(t(norm.mat.smooth), threads = n.cores) ##use smooth and segmented data to detect intra-normal cells
-  km=6
+
+  silhouette=factoextra::fviz_nbclust(x=as.matrix(d),FUNcluster = factoextra::hcut,method = 'silhouette',diss = (d),k.max = 50)
+  km=as.integer(as.character(silhouette$data$clusters))[which(silhouette$data$y==max(silhouette$data$y))]
+  print(km)
+
   fit <- hclust(d, method="ward.D2")
   ct <- cutree(fit, k=km)
 
