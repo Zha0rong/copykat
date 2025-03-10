@@ -4,7 +4,7 @@
 #' @param CNA.mat smoothed data matrix; genes in rows; cell names in columns.
 #' @param max.normal find the first number diploid cells to save efforts.
 #' @param mu.cut diploid baseline cutoff.
-#' @param Nfraq.cut minimal fractoins of genomes with CNAs.
+#' @param Nfraq.cut minimal fraction of genomes with CNAs.
 #'
 #' @return 1) predefined diploid cell names; 2) clustering results; 3) inferred baseline.
 #'
@@ -21,7 +21,7 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
       print(paste("cell: ", m, sep=""))
       sam <- CNA.mat[, m]
       sg <- max(c(0.05, 0.5*sd(sam)));
-      GM3 <- mixtools::normalmixEM(sam, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2),sigma = sg,arbvar=FALSE,ECM=FALSE,maxit=maxit);#maxrestarts=10; arbmean=TRUE; arbvar=TRUE;epsilon=0.01
+      GM3 <- mixtools::normalmixEM(sam, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2),sigma = sg,arbvar=FALSE,ECM=FALSE,maxit=maxit,fast = T)
 
       ###decide normal or tumor
       s <- sum(abs(GM3$mu)<=mu.cut)
