@@ -50,7 +50,7 @@ km=selected
 
     data.c <- apply(norm.mat.smooth[, which(ct==i)],1, median)
     sx <- max(c(0.05, 0.5*sd(data.c)))
-    GM3 <- mixtools::normalmixEM(data.c, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2), sigma = sx,arbvar=FALSE,ECM=FALSE,maxit=maxit)
+    GM3 <- mixtools::normalmixEM(data.c, lambda = rep(1,3)/3, mu = c(-0.2, 0, 0.2), sigma = sx,arbvar=FALSE,ECM=FALSE,maxit=maxit,fast = T)
     SDM <- c(SDM, GM3$sigma[1])
     SSD <- c(SSD, sd(data.c))
        i <- i+1
