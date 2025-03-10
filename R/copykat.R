@@ -153,7 +153,21 @@ start_time <- Sys.time()
 
           km <- 6
           fit <- hclust(d, method="ward.D2")
-           CL <- cutree(fit, km)
+          selection=data.frame(k=seq(2,50))
+          selection$sil=0
+
+          for (i in 1:nrow(selection)) {
+            Clustering.results=cutree(fit,k = selection$k[i])
+            sil=cluster::silhouette(Clustering.results,dist = d)
+            selection$sil[i]=mean(sil[,3])
+          }
+
+          selected=selection$k[selection$sil==max(selection$sil)]
+          if (length(selected)>1) {
+            selected=max(selected)
+          }
+          km=selected
+          CL <- cutree(fit, km)
 
            while(!all(table(CL)>5)){
           km <- km -1
@@ -176,7 +190,9 @@ start_time <- Sys.time()
           CL <- basa$cl
           if (WNS =="unclassified.prediction"){
 
-                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=normal_cell_fraction*ncol(norm.mat.smooth), mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores,maxit=maxit)
+                    basa <- baseline.GMM(CNA.mat=norm.mat.smooth, max.normal=ifelse(normal_cell_fraction>1,
+                                                                                    normal_cell_fraction,
+                                                                                    normal_cell_fraction*ncol(norm.mat.smooth)), mu.cut=0.05, Nfraq.cut=0.99,RE.before=basa,n.cores=n.cores,maxit=maxit)
                     basel <-basa$basel
                     WNS <- basa$WNS
 
