@@ -4,16 +4,16 @@
 \alias{convert.all.bins.hg20}
 \title{conver gene by cell matrix to genomic bins by cells matrix.}
 \usage{
-convert.all.bins.hg20(DNA.mat, RNA.mat, n.cores)
+convert.all.bins.hg20(DNA.mat, annotation, RNA.mat, n.cores)
 }
 \arguments{
 \item{DNA.mat}{input target bins, provided by copycat, with 220KB windows.}
 
+\item{annotation}{annotation file for all known genes, automatically loaded in copycat.}
+
 \item{RNA.mat}{RNA data matrix with genes in rows.}
 
 \item{n.cores}{number of cores for parallel computing.}
-
-\item{full.anno}{annotation file for all known genes, automatically loaded in copycat.}
 }
 \value{
 adjusted datamatrix with bins in rows, cells in columns.
