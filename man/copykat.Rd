@@ -20,7 +20,8 @@ copykat(
   distance = "euclidean",
   output.seg = "FALSE",
   plot.genes = "TRUE",
-  genome = "hg20",
+  annotation = NULL,
+  remove.cc.genes = T,
   n.cores = 1,
   maxit = 10000
 )
@@ -54,7 +55,9 @@ copykat(
 
 \item{plot.genes}{TRUE or FALSE, output heatmap of CNVs with genename labels}
 
-\item{genome}{hg20 or mm10, current version only work for human or mouse genes}
+\item{annotation}{annotation file for all known genes}
+
+\item{remove.cc.genes}{Whether to remove cell cycle genes from the data}
 
 \item{n.cores}{number of cores for parallel computing.}
 

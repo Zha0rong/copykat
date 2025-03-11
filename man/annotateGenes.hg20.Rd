@@ -4,14 +4,14 @@
 \alias{annotateGenes.hg20}
 \title{annotate genes with reference to hg38.}
 \usage{
-annotateGenes.hg20(mat, ID.type = "S")
+annotateGenes.hg20(mat, annotation, ID.type = "S")
 }
 \arguments{
 \item{mat}{data matrix; genes in rows; cell names in columns.}
 
-\item{ID.type}{gene id type: Symbol or Ensemble.}
+\item{annotation}{annotation file for all known genes.}
 
-\item{full.anno}{annotation file for all known genes, automatically loaded in copycat.}
+\item{ID.type}{gene id type: Symbol or Ensemble.}
 }
 \value{
 annotations of each genes in rows with chrom and positions.

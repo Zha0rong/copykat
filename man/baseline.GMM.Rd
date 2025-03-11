@@ -21,7 +21,7 @@ baseline.GMM(
 
 \item{mu.cut}{diploid baseline cutoff.}
 
-\item{Nfraq.cut}{minimal fractoins of genomes with CNAs.}
+\item{Nfraq.cut}{minimal fraction of genomes with CNAs.}
 }
 \value{
 1) predefined diploid cell names; 2) clustering results; 3) inferred baseline.

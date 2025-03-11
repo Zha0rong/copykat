@@ -14,6 +14,8 @@
 #' @param distance  distance methods include euclidean, and correlation converted distance include pearson and spearman.
 #' @param output.seg TRUE or FALSE, output seg file for IGV visualization
 #' @param plot.genes TRUE or FALSE, output heatmap of CNVs with genename labels
+#' @param annotation annotation file for all known genes
+#' @param remove.cc.genes Whether to remove cell cycle genes from the data
 #' @param min.gene.per.cell, default 200
 #' @param maxit, default 10000
 
