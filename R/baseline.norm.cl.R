@@ -35,7 +35,7 @@ if (length(selected)>1) {
 }
 km=selected
 if (km==2) {
-  km=selected$k[min(which(selection$sil>mean(selection$sil)))]
+  km=selection$k[min(which(selection$sil>mean(selection$sil)))]
   print(km)
 }
 
