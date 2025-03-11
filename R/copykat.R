@@ -167,7 +167,7 @@ start_time <- Sys.time()
           }
           km=selected
           if (km==2) {
-            km=selected$k[min(which(selection$sil>mean(selection$sil)))]
+            km=selection$k[min(which(selection$sil>mean(selection$sil)))]
             print(km)
           }
           CL <- cutree(fit, km)
