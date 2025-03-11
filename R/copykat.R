@@ -58,6 +58,7 @@ start_time <- Sys.time()
     rawmat <- rawmat[which(der > LOW.DR), ]; print(paste(nrow(rawmat)," genes past LOW.DR filtering", sep=""))
   }
 
+
   WNS1 <- "data quality is ok"
   if(nrow(rawmat) < 7000){
     WNS1 <- "low data quality"
@@ -165,6 +166,10 @@ start_time <- Sys.time()
             selected=max(selected)
           }
           km=selected
+          if (km==2) {
+            km=selected$k[min(which(selection$sil>mean(selection$sil)))]
+            print(km)
+          }
           CL <- cutree(fit, km)
 
            while(!all(table(CL)>5)){

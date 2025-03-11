@@ -8,7 +8,7 @@
 #' @return adjusted datamatrix with bins in rows, cells in columns.
 #'
 #' @examples
-#' test.cab <- convert.all.bins(DNA.mat, RNA.mat, n.cores=10)
+#' test.cab <- convert.all.bins(DNA.mat, RNA.mat,annotation=annotation, n.cores=10)
 #'
 #' test.cab.uber <- test.cab$RNAadj
 #' @export

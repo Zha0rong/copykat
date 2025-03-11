@@ -34,6 +34,11 @@ if (length(selected)>1) {
   selected=max(selected)
 }
 km=selected
+if (km==2) {
+  km=selected$k[min(which(selection$sil>mean(selection$sil)))]
+  print(km)
+}
+
   ct <- cutree(fit, k=km)
 
   while(!all(table(ct)>min.cells)){

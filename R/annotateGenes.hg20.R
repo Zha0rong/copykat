@@ -5,7 +5,7 @@
 #' @param annotation annotation file for all known genes.
 #' @return annotations of each genes in rows with chrom and positions.
 #' @examples
-#' test.anno.mat <- annotateGenes.hg20(mat=matx, ID.type="ENSEMBLE_id", full.anno = full.anno)
+#' test.anno.mat <- annotateGenes.hg20(mat=matx,annotation=annotation, ID.type="ENSEMBLE_id")
 #' @export
 annotateGenes.hg20 <- function(mat,annotation, ID.type="S"){
   print("start annotation ...")
