@@ -14,7 +14,6 @@
 #' @param distance  distance methods include euclidean, and correlation converted distance include pearson and spearman.
 #' @param output.seg TRUE or FALSE, output seg file for IGV visualization
 #' @param plot.genes TRUE or FALSE, output heatmap of CNVs with genename labels
-#' @param genome hg20 or mm10, current version only work for human or mouse genes
 #' @param min.gene.per.cell, default 200
 #' @param maxit, default 10000
 
@@ -34,7 +33,7 @@ copykat <- function(rawmat=rawdata, id.type="S",
                     LOW.DR=0.05, UP.DR=0.1, win.size=25,
                     norm.cell.names="", KS.cut=0.1,normal_cell_fraction=0.05,
                     sam.name="", distance="euclidean", output.seg="FALSE",
-                    plot.genes="TRUE", genome="hg20", n.cores=1,maxit=10000){
+                    plot.genes="TRUE",annotation=NULL, n.cores=1,maxit=10000){
 
 start_time <- Sys.time()
   set.seed(1234)
@@ -67,13 +66,14 @@ start_time <- Sys.time()
   }
 
   print("step 2: annotations gene coordinates ...")
-  if(genome=="hg20"){
-  anno.mat <- annotateGenes.hg20(mat = rawmat, ID.type = id.type) #SYMBOL or ENSEMBLE
-  } else if(genome=="mm10"){
-  anno.mat <- annotateGenes.mm10(mat = rawmat, ID.type = id.type) #SYMBOL or ENSEMBLE
-  dim(rawmat)
+  if (is.null(annotation)) {
+    stop("Please specify the annotation to be used.")
+  } else {
+    anno.mat <- annotateGenes.hg20(mat = rawmat,annotation=annotation, ID.type = id.type) #SYMBOL or ENSEMBLE
+
+    anno.mat <- anno.mat[order(as.numeric(anno.mat$abspos), decreasing = FALSE),]
+
   }
-  anno.mat <- anno.mat[order(as.numeric(anno.mat$abspos), decreasing = FALSE),]
 
 # print(paste(nrow(anno.mat)," genes annotated", sep=""))
 
