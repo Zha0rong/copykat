@@ -2,7 +2,7 @@
 #'
 #' @param DNA.mat input target bins, provided by copycat, with 220KB windows.
 #' @param RNA.mat RNA data matrix with genes in rows.
-#' @param full.anno annotation file for all known genes, automatically loaded in copycat.
+#' @param annotation annotation file for all known genes, automatically loaded in copycat.
 #' @param n.cores number of cores for parallel computing.
 #'
 #' @return adjusted datamatrix with bins in rows, cells in columns.
@@ -12,14 +12,14 @@
 #'
 #' test.cab.uber <- test.cab$RNAadj
 #' @export
-convert.all.bins.hg20 <- function(DNA.mat, RNA.mat, n.cores){
+convert.all.bins.hg20 <- function(DNA.mat,annotation, RNA.mat, n.cores){
 ##make list obj for each window
          DNA <- DNA.mat[-which(DNA.mat$chrom==24),]; dim(DNA)
          end <- DNA$chrompos
          start <- c(0, end[-length(end)])
           ls.all <- list()
           for(i in 1:nrow(DNA)){
-          sub.anno <- full.anno[which(full.anno$chromosome_name==DNA$chrom[i]),]
+          sub.anno <- annotation[which(annotation$chromosome_name==DNA$chrom[i]),]
           cent.gene <- 0.5*(sub.anno$start_position+sub.anno$end_position)
           x <- sub.anno$hgnc_symbol[which(cent.gene<=end[i] & cent.gene>= start[i])]
           if(length(x)==0){x <- "NA"}

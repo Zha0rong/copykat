@@ -1,8 +1,7 @@
 #' copycat main_func.
 #'
 #' @param rawmat raw data matrix; genes in rows; cell names in columns.
-#' @param  id.type gene id type: Symbol or Ensemble.
-#' @param  cell.line if the data are from pure cell line,put "yes"; if cell line data are a mixture of tumor and normal cells, still put "no".
+#' @param id.type gene id type: Symbol or Ensemble.
 #' @param LOW.DR minimal population fractions of genes for smoothing.
 #' @param UP.DR minimal population fractions of genes for segmentation.
 #' @param win.size minimal window sizes for segmentation.
@@ -30,8 +29,7 @@
 ###
 
 
-copykat <- function(rawmat=rawdata, id.type="S",
-                    cell.line="no", ngene.chr=5,min.gene.per.cell=200,
+copykat <- function(rawmat=rawdata, id.type="S", ngene.chr=5,min.gene.per.cell=200,
                     LOW.DR=0.05, UP.DR=0.1, win.size=25,
                     norm.cell.names="", KS.cut=0.1,normal_cell_fraction=0.05,
                     sam.name="", distance="euclidean", output.seg="FALSE",
@@ -116,15 +114,12 @@ start_time <- Sys.time()
   if(length(ToRemov2)>0){
     anno.mat <-anno.mat[, -which(colnames(anno.mat) %in% ToRemov2)]
   }
-  print(rownames(anno.mat))
 
-  # print(paste("filtered out ", length(ToRemov2), " cells with less than ",ngene.chr, " genes per chr", sep=""))
   rawmat3 <- data.matrix(anno.mat[, 8:ncol(anno.mat)])
   norm.mat<- log(sqrt(rawmat3)+sqrt(rawmat3+1))
   norm.mat<- apply(norm.mat,2,function(x)(x <- x-mean(x)))
   colnames(norm.mat) <-  colnames(rawmat3)
 
-  #print(paste("A total of ", ncol(norm.mat), " cells, ", nrow(norm.mat), " genes after preprocessing", sep=""))
 
   ##smooth data
   print("step 3: smoothing data with dlm ...")
@@ -141,15 +136,7 @@ start_time <- Sys.time()
   colnames(norm.mat.smooth) <- colnames(norm.mat)
 
   print("step 4: measuring baselines ...")
-  if (cell.line=="yes"){
-  	print("running pure cell line mode")
-  	    relt <- baseline.synthetic(norm.mat=norm.mat.smooth, min.cells=10, n.cores=n.cores)
-		norm.mat.relat <- relt$expr.relat
-		CL <- relt$cl
-        WNS <- "run with cell line mode"
-    	preN <- NULL
-
-      } else if(length(norm.cell.names)>1){
+  if(length(norm.cell.names)>1){
 
         #print(paste(length(norm.cell.names), "normal cells provided", sep=""))
          NNN <- length(colnames(norm.mat.smooth)[which(colnames(norm.mat.smooth) %in% norm.cell.names)])
@@ -272,112 +259,13 @@ start_time <- Sys.time()
 
 
   print("step 6: convert to genomic bins...") ###need multi-core
-  Aj <- convert.all.bins.hg20(DNA.mat = DNA.hg20, RNA.mat=RNA.copycat, n.cores = n.cores)
+  Aj <- convert.all.bins.hg20(DNA.mat = DNA.hg20, RNA.mat=RNA.copycat,annotation=annotation, n.cores = n.cores)
 
   uber.mat.adj <- data.matrix(Aj$RNA.adj[, 4:ncol(Aj$RNA.adj)])
 
   print("step 7: adjust baseline ...")
 
-    if(cell.line=="yes"){
 
-               mat.adj <- data.matrix(Aj$RNA.adj[, 4:ncol(Aj$RNA.adj)])
-               saveRDS(cbind(Aj$RNA.adj[, 1:3], mat.adj), paste(sample.name, "CNA_results.rds", sep=""))
-
-                if(distance=="euclidean"){
-                 hcc <- hclust(parallelDist::parDist(t(mat.adj),threads =n.cores, method = distance), method = "ward.D")
-                  }else {
-                 hcc <- hclust(as.dist(1-cor(mat.adj, method = distance)), method = "ward.D")
-                   }
-
-
-                  saveRDS(hcc, file = paste(sample.name,"clustering_results.rds",sep=""))
-
-                   #plot heatmap
-                   print("step 8: ploting heatmap ...")
-                  my_palette <- colorRampPalette(rev(RColorBrewer::brewer.pal(n = 3, name = "RdBu")))(n = 999)
-
-                   chr <- as.numeric(Aj$DNA.adj$chrom) %% 2+1
-                   rbPal1 <- colorRampPalette(c('black','grey'))
-                   CHR <- rbPal1(2)[as.numeric(chr)]
-                   chr1 <- cbind(CHR,CHR)
-
-
-                   if (ncol(mat.adj)< 3000){
-                   h <- 10
-                   } else {
-                   h <- 15
-                     }
-
-                  col_breaks = c(seq(-1,-0.4,length=50),seq(-0.4,-0.2,length=150),seq(-0.2,0.2,length=600),seq(0.2,0.4,length=150),seq(0.4, 1,length=50))
-                  #library(parallelDist)
-
-                   if(distance=="euclidean"){
-                          jpeg(paste(sample.name,"heatmap.jpeg",sep=""), height=h*250, width=4000, res=100)
-                          heatmap.3(t(mat.adj),dendrogram="r", distfun = function(x) parallelDist::parDist(x,threads =n.cores, method = distance), hclustfun = function(x) hclust(x, method="ward.D"),
-                          ColSideColors=chr1,Colv=NA, Rowv=TRUE,
-                          notecol="black",col=my_palette,breaks=col_breaks, key=TRUE,
-                          keysize=1, density.info="none", trace="none",
-                          cexRow=0.1,cexCol=0.1,cex.main=1,cex.lab=0.1,
-                          symm=F,symkey=F,symbreaks=T,cex=1, main=paste(WNS1,"; ",WNS, sep=""), cex.main=4, margins=c(10,10))
-                          dev.off()
-                          ### add a step to plot out gene by cell matrix
-                          if(plot.genes=="TRUE"){
-
-                          rownames(results.com) <- anno.mat2$hgnc_symbol
-                          chrg <- as.numeric(anno.mat2$chrom) %% 2+1
-                          rbPal1g <- colorRampPalette(c('black','grey'))
-                          CHRg <- rbPal1(2)[as.numeric(chrg)]
-                          chr1g <- cbind(CHRg,CHRg)
-
-                          pdf(paste(sample.name,"with_genes_heatmap.pdf",sep=""), height=h*2.5, width=40)
-                          heatmap.3(t(results.com),dendrogram="r", distfun = function(x) parallelDist::parDist(x,threads =n.cores, method = distance), hclustfun = function(x) hclust(x, method="ward.D"),
-                          ColSideColors=chr1g,Colv=NA, Rowv=TRUE,
-                          notecol="black",col=my_palette,breaks=col_breaks, key=TRUE,
-                          keysize=1, density.info="none", trace="none",
-                          cexRow=0.1,cexCol=0.1,cex.main=1,cex.lab=0.1,
-                          symm=F,symkey=F,symbreaks=T,cex=1, main=paste(WNS1,"; ",WNS, sep=""), cex.main=4, margins=c(10,10))
-                          dev.off()
-                           }
-                         #end of ploting gene by cell matrix
-
-                } else {
-                          jpeg(paste(sample.name,"heatmap.jpeg",sep=""), height=h*250, width=4000, res=100)
-                          heatmap.3(t(mat.adj),dendrogram="r", distfun = function(x) as.dist(1-cor(t(x), method = distance)), hclustfun = function(x) hclust(x, method="ward.D"),
-                          ColSideColors=chr1,Colv=NA, Rowv=TRUE,
-                          notecol="black",col=my_palette,breaks=col_breaks, key=TRUE,
-                          keysize=1, density.info="none", trace="none",
-                          cexRow=0.1,cexCol=0.1,cex.main=1,cex.lab=0.1,
-                          symm=F,symkey=F,symbreaks=T,cex=1, main=paste(WNS1,"; ",WNS, sep=""), cex.main=4, margins=c(10,10))
-                          dev.off()
-                           ### add a step to plot out gene by cell matrix
-             if(plot.genes=="TRUE"){
-
-                          rownames(results.com) <- anno.mat2$hgnc_symbol
-                          chrg <- as.numeric(anno.mat2$chrom) %% 2+1
-                          rbPal1g <- colorRampPalette(c('black','grey'))
-                          CHRg <- rbPal1(2)[as.numeric(chrg)]
-                          chr1g <- cbind(CHRg,CHRg)
-
-                          pdf(paste(sample.name,"with_genes_heatmap.pdf",sep=""), height=h*2.5, width=40)
-                          heatmap.3(t(results.com),dendrogram="r", distfun = function(x) as.dist(1-cor(t(x), method = distance)), hclustfun = function(x) hclust(x, method="ward.D"),
-                          ColSideColors=chr1g,Colv=NA, Rowv=TRUE,
-                          notecol="black",col=my_palette,breaks=col_breaks, key=TRUE,
-                          keysize=1, density.info="none", trace="none",
-                          cexRow=0.1,cexCol=0.1,cex.main=1,cex.lab=0.1,
-                          symm=F,symkey=F,symbreaks=T,cex=1, main=paste(WNS1,"; ",WNS, sep=""), cex.main=4, margins=c(10,10))
-                          dev.off()
-                          }
-                         #end of ploting gene by cell matrix
-                          }
-
-                          end_time<- Sys.time()
-                          print(end_time -start_time)
-
-                         reslts <- list(cbind(Aj$RNA.adj[, 1:3], mat.adj), hcc)
-                         names(reslts) <- c("CNAmat","hclustering")
-                         return(reslts)
-    } else {
-      ########## cell line mode ends here ####################
 
       #removed baseline adjustment
         if(distance=="euclidean"){
@@ -613,7 +501,7 @@ start_time <- Sys.time()
   reslts <- list(res, cbind(Aj$RNA.adj[, 1:3], mat.adj), hcc)
   names(reslts) <- c("prediction", "CNAmat","hclustering")
   return(reslts)
-}
+
 
 
 
