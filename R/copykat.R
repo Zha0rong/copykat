@@ -261,7 +261,7 @@ start_time <- Sys.time()
 
 
   print("step 6: convert to genomic bins...") ###need multi-core
-  Aj <- convert.all.bins.hg20(DNA.mat = DNA.hg20, RNA.mat=RNA.copycat,annotation=annotation, n.cores = n.cores)
+  Aj <- convert.all.bins(DNA.mat = DNA.hg20, RNA.mat=RNA.copycat,annotation=annotation, n.cores = n.cores)
 
   uber.mat.adj <- data.matrix(Aj$RNA.adj[, 4:ncol(Aj$RNA.adj)])
 
