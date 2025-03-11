@@ -7,7 +7,7 @@
 #' @examples
 #' test.anno.mat <- annotateGenes.hg20(mat=matx,annotation=annotation, ID.type="ENSEMBLE_id")
 #' @export
-annotateGenes.hg20 <- function(mat,annotation, ID.type="S"){
+annotateGenes <- function(mat,annotation, ID.type="S"){
   print("start annotation ...")
 
   if(substring(ID.type,1,1) %in% c("E", "e")){
