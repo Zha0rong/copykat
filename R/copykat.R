@@ -33,7 +33,7 @@ copykat <- function(rawmat=rawdata, id.type="S",
                     LOW.DR=0.05, UP.DR=0.1, win.size=25,
                     norm.cell.names="", KS.cut=0.1,normal_cell_fraction=0.05,
                     sam.name="", distance="euclidean", output.seg="FALSE",
-                    plot.genes="TRUE",annotation=NULL, n.cores=1,maxit=10000){
+                    plot.genes="TRUE",annotation=NULL,remove.cc.genes=T, n.cores=1,maxit=10000){
 
 start_time <- Sys.time()
   set.seed(1234)
@@ -78,10 +78,18 @@ start_time <- Sys.time()
 # print(paste(nrow(anno.mat)," genes annotated", sep=""))
 
   ### module 3 removing genes that are involved in cell cycling
-
-  if(genome=="hg20"){
-  HLAs <- anno.mat$hgnc_symbol[grep("^HLA-", anno.mat$hgnc_symbol)]
-  toRev <- which(anno.mat$hgnc_symbol %in% c(as.vector(cyclegenes[[1]]), HLAs))
+  s.genes=c("MCM5" ,    "PCNA"    , "TYMS",     "FEN1" ,    "MCM7"  ,   "MCM4",     "RRM1" ,    "UNG"  ,    "GINS2"  ,  "MCM6",     "CDCA7",
+            "DTL"   ,   "PRIM1"  ,  "UHRF1",    "CENPU" ,   "HELLS" ,   "RFC2" ,    "POLR1B" ,  "NASP"  ,   "RAD51AP1", "GMNN" ,    "WDR76",
+            "SLBP"   ,  "CCNE2" ,   "UBR7"  ,   "POLD3",    "MSH2" ,    "ATAD2" ,   "RAD51",    "RRM2"  ,   "CDC45"  ,  "CDC6" ,    "EXO1",
+            "TIPIN"   , "DSCC1",    "BLM",  "CASP8AP2", "USP1" ,    "CLSPN"  ,  "POLA1" ,   "CHAF1B" ,  "MRPL36"  , "E2F8"    )
+  g2m.genes=c("HMGB2",   "CDK1"  ,  "NUSAP1" , "UBE2C"  , "BIRC5" ,  "TPX2"  ,  "TOP2A" ,  "NDC80" ,  "CKS2"  ,  "NUF2" ,   "CKS1B" ,  "MKI67",
+              "TMPO"  ,  "CENPF" ,  "TACC3"  , "PIMREG" , "SMC4"  ,  "CCNB2" ,  "CKAP2L" , "CKAP2",   "AURKB"  , "BUB1" ,   "KIF11" ,  "ANP32E",
+              "TUBB4B" , "GTSE1" ,  "KIF20B" , "HJURP" ,  "CDCA3" ,  "JPT1"  ,  "CDC20" ,  "TTK"  ,   "CDC25C" , "KIF2C" ,  "RANGAP1", "NCAPD2",
+              "DLGAP5" , "CDCA2" ,  "CDCA8"  , "ECT2"   , "KIF23"  , "HMMR"  ,  "AURKA"  , "PSRC1"  , "ANLN"  ,  "LBR"  ,   "CKAP5" ,  "CENPE",
+              "CTCF"  ,  "NEK2"  ,  "G2E3"  ,  "GAS2L3",  "CBX5" ,   "CENPA" )
+  if(remove.cc.genes){
+  HLAs <- anno.mat$hgnc_symbol[toupper(anno.mat$hgnc_symbol)%in%c(s.genes,g2m.genes)]
+  toRev <- which(anno.mat$hgnc_symbol %in% c(HLAs))
   if(length(toRev)>0){
     anno.mat <- anno.mat[-toRev, ]
   }
@@ -106,6 +114,7 @@ start_time <- Sys.time()
   if(length(ToRemov2)>0){
     anno.mat <-anno.mat[, -which(colnames(anno.mat) %in% ToRemov2)]
   }
+  print(rownames(anno.mat))
 
   # print(paste("filtered out ", length(ToRemov2), " cells with less than ",ngene.chr, " genes per chr", sep=""))
   rawmat3 <- data.matrix(anno.mat[, 8:ncol(anno.mat)])

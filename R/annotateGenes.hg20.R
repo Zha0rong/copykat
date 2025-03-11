@@ -2,7 +2,7 @@
 #'
 #' @param mat data matrix; genes in rows; cell names in columns.
 #' @param ID.type gene id type: Symbol or Ensemble.
-#' @param full.anno annotation file for all known genes, automatically loaded in copycat.
+#' @param annotation annotation file for all known genes.
 #'
 #' @return annotations of each genes in rows with chrom and positions.
 #'
