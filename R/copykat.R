@@ -1,5 +1,6 @@
 #' copycat main_func.
-#'
+#' @import edgeR
+#' @import cluster
 #' @param rawmat raw data matrix; genes in rows; cell names in columns.
 #' @param id.type gene id type: Symbol or Ensemble.
 #' @param LOW.DR minimal population fractions of genes for smoothing.
@@ -70,7 +71,7 @@ start_time <- Sys.time()
   if (is.null(annotation)) {
     stop("Please specify the annotation to be used.")
   } else {
-    anno.mat <- annotateGenes.hg20(mat = rawmat,annotation=annotation, ID.type = id.type) #SYMBOL or ENSEMBLE
+    anno.mat <- annotateGenes(mat = rawmat,annotation=annotation, ID.type = id.type) #SYMBOL or ENSEMBLE
 
     anno.mat <- anno.mat[order(as.numeric(anno.mat$abspos), decreasing = FALSE),]
 
@@ -117,7 +118,7 @@ start_time <- Sys.time()
   }
 
   rawmat3 <- data.matrix(anno.mat[, 8:ncol(anno.mat)])
-  norm.mat<- log(sqrt(rawmat3)+sqrt(rawmat3+1))
+  norm.mat = log(edgeR::cpm(norm.mat)+1)
   norm.mat<- apply(norm.mat,2,function(x)(x <- x-mean(x)))
   colnames(norm.mat) <-  colnames(rawmat3)
 
@@ -166,10 +167,6 @@ start_time <- Sys.time()
             selected=max(selected)
           }
           km=selected
-          if (km==2) {
-            km=selection$k[min(which(selection$sil>mean(selection$sil)))]
-            print(km)
-          }
           CL <- cutree(fit, km)
 
            while(!all(table(CL)>5)){

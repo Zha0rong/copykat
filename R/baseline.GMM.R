@@ -64,10 +64,7 @@ baseline.GMM <- function(CNA.mat, max.normal=5, mu.cut=0.05, Nfraq.cut=0.99, RE.
       selected=max(selected)
     }
     km=selected
-    if (km==2) {
-      km=selection$k[min(which(selection$sil>mean(selection$sil)))]
-      print(km)
-    }
+
     ct <- cutree(fit, k=km)
 
 

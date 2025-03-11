@@ -12,7 +12,7 @@
 #'
 #' test.cab.uber <- test.cab$RNAadj
 #' @export
-convert.all.bins.hg20 <- function(DNA.mat,annotation, RNA.mat, n.cores){
+convert.all.bins <- function(DNA.mat,annotation, RNA.mat, n.cores){
 ##make list obj for each window
          DNA <- DNA.mat[-which(DNA.mat$chrom==24),]; dim(DNA)
          end <- DNA$chrompos
