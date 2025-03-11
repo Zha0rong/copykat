@@ -7,7 +7,6 @@
 copykat(
   rawmat = rawdata,
   id.type = "S",
-  cell.line = "no",
   ngene.chr = 5,
   min.gene.per.cell = 200,
   LOW.DR = 0.05,
@@ -30,8 +29,6 @@ copykat(
 \item{rawmat}{raw data matrix; genes in rows; cell names in columns.}
 
 \item{id.type}{gene id type: Symbol or Ensemble.}
-
-\item{cell.line}{if the data are from pure cell line,put "yes"; if cell line data are a mixture of tumor and normal cells, still put "no".}
 
 \item{ngene.chr}{minimal number of genes per chromosome for cell filtering.}
 
