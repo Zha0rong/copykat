@@ -123,7 +123,7 @@ start_time <- Sys.time()
 
   upper_quart = apply(rawmat3, 2, quantile, probs=0.75)
   mean_upper_quart = mean(upper_quart)
-  norm.mat = sweep(norm.mat, 2, mean_upper_quart/upper_quart, "*")
+  norm.mat = sweep(rawmat3, 2, mean_upper_quart/upper_quart, "*")
 
 
 
