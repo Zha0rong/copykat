@@ -120,7 +120,7 @@ start_time <- Sys.time()
   rawmat3 <- data.matrix(anno.mat[, 8:ncol(anno.mat)])
   #norm.mat<- log(sqrt(rawmat3)+sqrt(rawmat3+1))
   #norm.mat<- apply(norm.mat,2,function(x)(x <- x-mean(x)))
-
+  rawmat3 <- rawmat3+1
   upper_quart = apply(rawmat3, 2, quantile, probs=0.75)
   mean_upper_quart = mean(upper_quart)
   norm.mat = sweep(rawmat3, 2, mean_upper_quart/upper_quart, "*")
